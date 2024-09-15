@@ -36,10 +36,17 @@ public static class ExtMets
     }
 }
 
+public enum eDirections
+{
+    none = -1, up, right, down, left
+}
+
 public class EntityMover : MonoBehaviour
 {
 
     public Vector2Int? Destination { get; private set; }
+    public eDirections TravelDir { get; private set; }
+    public eDirections FacingDir { get; private set; }
     [Range(0, 5)]
     public float MoveSpeed = 1f;
     protected float TimeSinceDestSet = -1f;
@@ -54,6 +61,29 @@ public class EntityMover : MonoBehaviour
         }
         Destination = (transform.position + dir.V2to3(ZValue)).V3toI();
         TimeSinceDestSet = 0f;
+
+        if (dir.x != 0f)
+        {
+            if (dir.x > 0f)
+            {
+                TravelDir = FacingDir = eDirections.right;
+            }
+            else
+            {
+                TravelDir = FacingDir = eDirections.left;
+            }
+        }
+        else
+        {
+            if (dir.y > 0f)
+            {
+                TravelDir = FacingDir = eDirections.up;
+            }
+            else
+            {
+                TravelDir = FacingDir = eDirections.down;
+            }
+        }
     }
 
     // Start is called before the first frame update
@@ -88,6 +118,7 @@ public class EntityMover : MonoBehaviour
         {
             transform.position = Destination.Value.V2Ito3(ZValue);
             Destination = null;
+            TravelDir = eDirections.none;
         }
     }
 
