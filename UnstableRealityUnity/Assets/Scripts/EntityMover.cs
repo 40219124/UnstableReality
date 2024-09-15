@@ -90,6 +90,7 @@ public class EntityMover : MonoBehaviour
     void Start()
     {
         ZValue = transform.position.z;
+        FacingDir = eDirections.down;
     }
 
     // Update is called once per frame

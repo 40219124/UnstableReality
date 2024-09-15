@@ -239,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2470e4455403f4f44aa2f292216b7733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 1
+  MoveSpeed: 2
 --- !u!4 &923019647
 Transform:
   m_ObjectHideFlags: 0
@@ -355,15 +355,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5476227273636258706, guid: a262a800a1494554ea095e3d00bd19b6, type: 3}
       propertyPath: m_BackGroundColor.b
-      value: 0.16078432
+      value: 0.41176474
       objectReference: {fileID: 0}
     - target: {fileID: 5476227273636258706, guid: a262a800a1494554ea095e3d00bd19b6, type: 3}
       propertyPath: m_BackGroundColor.g
-      value: 0.16078432
+      value: 0.41176474
       objectReference: {fileID: 0}
     - target: {fileID: 5476227273636258706, guid: a262a800a1494554ea095e3d00bd19b6, type: 3}
       propertyPath: m_BackGroundColor.r
-      value: 0.16078432
+      value: 0.41176474
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
