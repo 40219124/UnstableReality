@@ -181,11 +181,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: e23937fa83056364c83b1a6de5c46d82, type: 3}
+    m_Font: {fileID: 12800000, guid: deb35ffd67265c9449a4cdc6d48fcd82, type: 2}
     m_FontSize: 16
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 1
+    m_MinSize: 0
     m_MaxSize: 113
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -1191,6 +1191,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DialogueBoxFiller
       objectReference: {fileID: 0}
+    - target: {fileID: 8443709279994195217, guid: 15ae4ee2aea4b674cb3500f3a3d19f11, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: deb35ffd67265c9449a4cdc6d48fcd82, type: 2}
     - target: {fileID: 8443720434592293409, guid: 15ae4ee2aea4b674cb3500f3a3d19f11, type: 3}
       propertyPath: m_RootOrder
       value: 3
