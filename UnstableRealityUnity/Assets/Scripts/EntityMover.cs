@@ -54,12 +54,14 @@ public class EntityMover : MonoBehaviour
     protected float ZValue;
 
     protected Vector2? AttemptedDesDir = null;
+    protected float TimeAttemptedSet = -1f;
 
     public void SetDesiredDirection(Vector2 dir)
     {
         if (Destination != null)
         {
             AttemptedDesDir = dir;
+            TimeAttemptedSet = Time.time;
             return;
         }
         Destination = (transform.position + dir.V2to3(ZValue)).V3toI();
@@ -125,7 +127,10 @@ public class EntityMover : MonoBehaviour
             TravelDir = eDirections.none;
             if (AttemptedDesDir != null)
             {
-                SetDesiredDirection(AttemptedDesDir.Value);
+                if (Time.time == TimeAttemptedSet)
+                {
+                    SetDesiredDirection(AttemptedDesDir.Value);
+                }
                 AttemptedDesDir = null;
             }
         }
