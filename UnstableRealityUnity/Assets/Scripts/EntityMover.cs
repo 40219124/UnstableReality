@@ -53,10 +53,13 @@ public class EntityMover : MonoBehaviour
 
     protected float ZValue;
 
+    protected Vector2? AttemptedDesDir = null;
+
     public void SetDesiredDirection(Vector2 dir)
     {
         if (Destination != null)
         {
+            AttemptedDesDir = dir;
             return;
         }
         Destination = (transform.position + dir.V2to3(ZValue)).V3toI();
@@ -120,6 +123,11 @@ public class EntityMover : MonoBehaviour
             transform.position = Destination.Value.V2Ito3(ZValue);
             Destination = null;
             TravelDir = eDirections.none;
+            if (AttemptedDesDir != null)
+            {
+                SetDesiredDirection(AttemptedDesDir.Value);
+                AttemptedDesDir = null;
+            }
         }
     }
 
