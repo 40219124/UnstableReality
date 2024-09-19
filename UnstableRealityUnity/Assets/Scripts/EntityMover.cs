@@ -75,6 +75,28 @@ public class EntityMover : MonoBehaviour
     [SerializeField]
     protected Tilemap Tilemap;
 
+
+    protected void OnEnable()
+    {
+        StageManager.Instance.ChangingStage += ClearAll;
+    }
+    protected void OnDisable()
+    {
+        StageManager.Instance.ChangingStage -= ClearAll;
+    }
+
+    protected void ClearAll()
+    {
+        Destination = null;
+        TravelDir = eDirections.none;
+        FacingDir = eDirections.down;
+
+        TimeSinceDestSet = -1f;
+
+        AttemptedDesDir = null;
+        TimeAttemptedSet = -1f;
+    }
+
     public eSetMoveResult SetDesiredDirection(Vector2 dir)
     {
         eSetMoveResult outcome = eSetMoveResult.tooSoon;
