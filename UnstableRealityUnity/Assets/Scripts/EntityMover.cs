@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using System;
+using System.Linq;
 
 public static class ExtMets
 {
@@ -40,6 +42,23 @@ public static class ExtMets
     {
         return new Vector3Int(Mathf.RoundToInt(vec.x), Mathf.RoundToInt(vec.y), Mathf.RoundToInt(vec.z));
     }
+
+    public static eDirections Opposite(this eDirections dir)
+    {
+        switch (dir)
+        {
+            case eDirections.up:
+                return eDirections.down;
+            case eDirections.right:
+                return eDirections.left;
+            case eDirections.down:
+                return eDirections.up;
+            case eDirections.left:
+                return eDirections.right;
+            default:
+                return eDirections.none;
+        }
+    }
 }
 
 public enum eDirections
@@ -60,12 +79,20 @@ public class EntityMover : MonoBehaviour
     public Vector2Int? Destination { get; private set; }
     public eDirections TravelDir { get; private set; }
     public eDirections FacingDir { get; private set; }
+    public Func<eDirections, eDirections> ModifyFacingDirection;
     [Range(0, 5)]
     public float MoveSpeed = 1f;
+    public float SprintMod = 2f;
+    public bool IsSprinting = false;
+    public float ExternalSpeedMod = 1f;
     protected float TimeSinceDestSet = -1f;
+
+    public bool FreezeAfterMove = false;
+    public bool IsFrozen = false;
 
     protected float ZValue;
 
+    public Func<Vector2, Vector2> ModifyDesiredDirection;
     protected Vector2? AttemptedDesDir = null;
     protected float TimeAttemptedSet = -1f;
 
@@ -91,11 +118,18 @@ public class EntityMover : MonoBehaviour
         TravelDir = eDirections.none;
         FacingDir = eDirections.down;
 
+        ModifyDesiredDirection = null;
+        ModifyFacingDirection = null;
+
+        IsSprinting = false;
+        ExternalSpeedMod = 1f;
+
         TimeSinceDestSet = -1f;
 
         AttemptedDesDir = null;
         TimeAttemptedSet = -1f;
     }
+
 
     public eSetMoveResult SetDesiredDirection(Vector2 dir)
     {
@@ -106,6 +140,14 @@ public class EntityMover : MonoBehaviour
             AttemptedDesDir = dir;
             TimeAttemptedSet = Time.time;
             return outcome;
+        }
+
+        if (ModifyDesiredDirection != null)
+        {
+            foreach (Func<Vector2, Vector2> f in (ModifyDesiredDirection?.GetInvocationList()).Cast<Func<Vector2, Vector2>>())
+            {
+                dir = f(dir);
+            }
         }
         Vector3 desPos = (transform.position + dir.V2to3(0f));
 
@@ -130,44 +172,46 @@ public class EntityMover : MonoBehaviour
             TimeSinceDestSet = 0f;
         }
 
+        // dertermine enum
+        eDirections newDir = FacingDir;
         if (dir.x != 0f)
         {
             if (dir.x > 0f)
             {
-                if (outcome != eSetMoveResult.blocked)
-                {
-                    TravelDir = eDirections.right;
-                }
-                FacingDir = eDirections.right;
+                newDir = eDirections.right;
             }
             else
             {
-                if (outcome != eSetMoveResult.blocked)
-                {
-                    TravelDir = eDirections.left;
-                }
-                FacingDir = eDirections.left;
+                newDir = eDirections.left;
             }
         }
         else
         {
             if (dir.y > 0f)
             {
-                if (outcome != eSetMoveResult.blocked)
-                {
-                    TravelDir = eDirections.up;
-                }
-                FacingDir = eDirections.up;
+                newDir = eDirections.up;
             }
             else
             {
-                if (outcome != eSetMoveResult.blocked)
-                {
-                    TravelDir = eDirections.down;
-                }
-                FacingDir = eDirections.down;
+                newDir = eDirections.down;
             }
         }
+        // set move enum if moving
+        if (outcome != eSetMoveResult.blocked)
+        {
+            TravelDir = newDir;
+        }
+        // modify enum for facing different to moving
+        if (ModifyFacingDirection != null)
+        {
+            foreach (Func<eDirections, eDirections> f in ModifyFacingDirection.GetInvocationList().Cast<Func<eDirections, eDirections>>())
+            {
+                newDir = f(newDir);
+            }
+        }
+        FacingDir = newDir;
+
+
 
         if (outcome != eSetMoveResult.blocked)
         {
@@ -189,17 +233,18 @@ public class EntityMover : MonoBehaviour
         MoveUpdate();
     }
 
+
     void MoveUpdate()
     {
         TimeSinceDestSet += Time.deltaTime;
 
-        if (Destination == null)
+        if (Destination == null || IsFrozen)
         {
             return;
         }
         Vector3 vecToDest = Destination.Value.V2Ito3(0f) - transform.position;
         vecToDest.z = 0;
-        Vector3 moveVec = vecToDest.normalized * MoveSpeed * Time.deltaTime;
+        Vector3 moveVec = vecToDest.normalized * MoveSpeed * Time.deltaTime * (IsSprinting ? SprintMod : 1f) * ExternalSpeedMod;
         if (moveVec.sqrMagnitude > vecToDest.sqrMagnitude)
         {
             moveVec = vecToDest;
@@ -211,7 +256,12 @@ public class EntityMover : MonoBehaviour
             transform.position = Destination.Value.V2Ito3(ZValue);
             Destination = null;
             TravelDir = eDirections.none;
-            if (AttemptedDesDir != null)
+            if (FreezeAfterMove)
+            {
+                IsFrozen = true;
+                FreezeAfterMove = false;
+            }
+            else if (AttemptedDesDir != null)
             {
                 if (Time.time == TimeAttemptedSet)
                 {

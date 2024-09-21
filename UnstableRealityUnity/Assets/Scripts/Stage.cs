@@ -10,38 +10,145 @@ public class Stage : MonoBehaviour
     [SerializeField]
     StageEndCollider EndZone;
 
+    protected static StageManager Manager;
+    protected EntityMover Player;
+
     public int StageId;
+    protected bool IsCurrentStage = false;
+
+    [SerializeField]
+    protected float ExitDelay = 1f;
+    protected float ExitRemaining = -1f;
+    protected bool PlayerOnExit = false;
+
+
+    private void Awake()
+    {
+        ExitRemaining = ExitDelay;
+    }
     // Start is called before the first frame update
     void Start()
     {
-
+        if (Manager == null)
+        {
+            Manager = StageManager.Instance;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (!IsCurrentStage)
+        {
+            return;
+        }
+        ExitingUpdate();
     }
 
-    private void OnEnable()
+    protected void ExitingUpdate()
     {
+        if (PlayerOnExit)
+        {
+            ExitRemaining -= Time.deltaTime;
+        }
+        else if (ExitRemaining < ExitDelay && ExitRemaining != 0f)
+        {
+            ExitRemaining += Time.deltaTime;
+        }
+        ExitRemaining = Mathf.Clamp(ExitRemaining, 0f, ExitDelay);
+
+        if (ExitRemaining == 0f)
+        {
+            if (!Player.IsFrozen)
+            {
+                Player.FreezeAfterMove = true;
+            }
+            else if (Player.IsFrozen)
+            {
+                if (PlayerOnExit)
+                {
+                    EndRoutine();
+                }
+                else
+                {
+                    Player.IsFrozen = false;
+                    ExitRemaining += Time.deltaTime;
+                }
+            }
+        }
+    }
+
+    public void SetCurrentStage(bool isCurrent)
+    {
+        IsCurrentStage = isCurrent;
+        if (isCurrent)
+        {
+            OnEnable();
+        }
+        else
+        {
+            OnDisable();
+            TearDown();
+        }
+    }
+
+    public void FinishSetUp()
+    {
+        Player.IsFrozen = false;
+    }
+
+    public void TearDown()
+    {
+        ExitRemaining = ExitDelay;
+    }
+
+    protected Vector2 ModifyDesiredDirection(Vector2 dir)
+    {
+        return dir;
+    }
+
+    protected eDirections ModifyFacingDirection(eDirections facing)
+    {
+        return facing;
+    }
+
+    protected void OnEnable()
+    {
+        if (!IsCurrentStage)
+        {
+            return;
+        }
         EndZone.OnZoneEnter += OnEndEnter;
         EndZone.OnZoneExit += OnEndExit;
+
+        Player = Manager.GetPlayerMover();
+        Player.ModifyDesiredDirection += ModifyDesiredDirection;
+        Player.ModifyFacingDirection += ModifyFacingDirection;
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         EndZone.OnZoneEnter -= OnEndEnter;
         EndZone.OnZoneExit -= OnEndExit;
+
+        Player.ModifyDesiredDirection -= ModifyDesiredDirection;
+        Player.ModifyFacingDirection -= ModifyFacingDirection;
+        Player = null;
     }
 
-    private void OnEndEnter(Collider2D collision)
+    protected void EndRoutine()
     {
         StartCoroutine(StageManager.Instance.LoadStage(NextStage.StageId));
+        PlayerOnExit = false;
     }
 
-    private void OnEndExit(Collider2D collision)
+    protected void OnEndEnter(Collider2D collision)
     {
+        PlayerOnExit = true;
+    }
 
+    protected void OnEndExit(Collider2D collision)
+    {
+        PlayerOnExit = false;
     }
 }

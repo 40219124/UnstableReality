@@ -21,6 +21,13 @@ public class PlayerController : MonoBehaviour
 
     void InputUpdate()
     {
+        if (!StageManager.Instance.PlayerIsControllable)
+        {
+            return;
+        }
+
+        Mover.IsSprinting = Input.GetButton("BButton");
+
         Vector2 moveDir = Input.GetAxisRaw("Horizontal") * Vector2.right + Input.GetAxisRaw("Vertical") * Vector2.up;
         
         if (Mathf.Abs(moveDir.y) >= Mathf.Abs(moveDir.x))
