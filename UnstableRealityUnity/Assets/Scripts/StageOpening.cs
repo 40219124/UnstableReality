@@ -7,6 +7,18 @@ public class StageOpening : Stage
     readonly int xLimit = 33;
     int xReached = -1;
 
+
+    protected override void Start()
+    {
+        base.Start();
+    }
+
+    public override void InitialSetUp()
+    {
+        base.InitialSetUp();
+        MakePlayerSilhouette(true);
+    }
+
     public override void TearDown()
     {
         base.TearDown();
@@ -16,6 +28,10 @@ public class StageOpening : Stage
     protected override void StageUpdate()
     {
         xReached = Mathf.FloorToInt(Player.transform.position.x);
+        if(PlayerSilhouetted && Player.transform.position.x > ((float)xLimit - 0.5f))
+        {
+            MakePlayerSilhouette(false);
+        }
 
         base.StageUpdate();
     }

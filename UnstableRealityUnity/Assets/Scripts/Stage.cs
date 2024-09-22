@@ -38,6 +38,9 @@ public class Stage : MonoBehaviour
     protected Texture ClosingTransImage;
     public Texture GetClosingTransImage() { return ClosingTransImage; }
 
+    protected Material PlayerMat;
+    protected bool PlayerSilhouetted = false;
+
     protected virtual void Awake()
     {
         ExitRemaining = ExitDelay;
@@ -106,13 +109,19 @@ public class Stage : MonoBehaviour
         if (isCurrent)
         {
             OnEnable();
-            Manager.ChangeMusic(OpeningMusic);
+            InitialSetUp();
         }
         else
         {
             OnDisable();
             TearDown();
         }
+    }
+
+    public virtual void InitialSetUp()
+    {
+        Manager.ChangeMusic(OpeningMusic);
+        PlayerMat = Player.GetComponentInChildren<SpriteRenderer>().material;
     }
 
     public virtual void FinishSetUp()
@@ -124,6 +133,12 @@ public class Stage : MonoBehaviour
     public virtual void TearDown()
     {
         ExitRemaining = ExitDelay;
+    }
+
+    protected void MakePlayerSilhouette(bool state)
+    {
+        PlayerMat.SetInt("_Silhouette", state ? 1 : 0);
+        PlayerSilhouetted = state;
     }
 
     protected virtual Vector2 ModifyDesiredDirection(Vector2 dir)
