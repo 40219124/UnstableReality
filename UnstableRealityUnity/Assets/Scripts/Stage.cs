@@ -3,6 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+public enum eMusic
+{
+    none = -1,
+    BasicDrone,
+    Movement,
+    LowMelody,
+    HighMelody
+}
 public class Stage : MonoBehaviour
 {
     [SerializeField]
@@ -21,6 +29,7 @@ public class Stage : MonoBehaviour
     protected float ExitRemaining = -1f;
     protected bool PlayerOnExit = false;
 
+    protected eMusic OpeningMusic = eMusic.BasicDrone;
 
     private void Awake()
     {
@@ -85,6 +94,7 @@ public class Stage : MonoBehaviour
         if (isCurrent)
         {
             OnEnable();
+            Manager.ChangeMusic(OpeningMusic);
         }
         else
         {

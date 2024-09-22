@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[Serializable]
+public class TrackByEnum
+{
+    public eMusic Key;
+    public AudioClip Value;
+}
+
 public class StageManager : MonoBehaviour
 {
     private static StageManager _instance;
@@ -22,12 +29,18 @@ public class StageManager : MonoBehaviour
     private Texture DefaultTransTex;
     [SerializeField]
     private Material RenderCanvas;
-    private string TransTexName = "_TransitionTexture";
-    private string TransProgName = "_TransProgress";
+    private readonly string TransTexName = "_TransitionTexture";
+    private readonly string TransProgName = "_TransProgress";
 
     [SerializeField]
     private Transform Player;
     private EntityMover PlayerMover;
+
+    [SerializeField]
+    AudioSource MusicPlayer;
+    float TimeOfLastMusicChange;
+    [SerializeField]
+    public List<TrackByEnum> MusicTracks = new List<TrackByEnum>();
     [SerializeField]
     List<Stage> Stages = new List<Stage>();
     // Start is called before the first frame update
@@ -66,6 +79,44 @@ public class StageManager : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public void ChangeMusic(eMusic newMusic)
+    {
+        StartCoroutine(ChangeMusicCo(newMusic));
+    }
+
+    public AudioClip GetMusic(eMusic music)
+    {
+        return MusicTracks.Find(x => x.Key == music).Value;
+    }
+
+    IEnumerator ChangeMusicCo(eMusic newMusic)
+    {
+        float personalStart = TimeOfLastMusicChange = Time.deltaTime;
+        yield return null;
+        if (MusicPlayer.isPlaying)
+        {
+            float fadeTime = 0.5f;
+            for (float t = fadeTime; t > 0f; t -= Time.deltaTime)
+            {
+                if(personalStart != TimeOfLastMusicChange)
+                {
+                    yield break;
+                }
+                MusicPlayer.volume = Mathf.Clamp01(t / fadeTime);
+                yield return null;
+            }
+            MusicPlayer.Stop();
+        }
+        if(newMusic == eMusic.none || personalStart != TimeOfLastMusicChange)
+        {
+            yield break;
+        }
+        MusicPlayer.clip = GetMusic(newMusic);
+        MusicPlayer.volume = 1f;
+        yield return null;
+        MusicPlayer.Play();
     }
 
     IEnumerator ChangeStage(int stage)
