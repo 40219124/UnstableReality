@@ -233,6 +233,11 @@ public class EntityMover : MonoBehaviour
         MoveUpdate();
     }
 
+    protected void DoFreezeAfterMove()
+    {
+                FreezeAfterMove = false;
+                IsFrozen = true;
+    }
 
     void MoveUpdate()
     {
@@ -240,6 +245,10 @@ public class EntityMover : MonoBehaviour
 
         if (Destination == null || IsFrozen)
         {
+            if (FreezeAfterMove)
+            {
+                DoFreezeAfterMove();
+            }
             return;
         }
         Vector3 vecToDest = Destination.Value.V2Ito3(0f) - transform.position;
@@ -258,8 +267,7 @@ public class EntityMover : MonoBehaviour
             TravelDir = eDirections.none;
             if (FreezeAfterMove)
             {
-                IsFrozen = true;
-                FreezeAfterMove = false;
+                DoFreezeAfterMove();
             }
             else if (AttemptedDesDir != null)
             {

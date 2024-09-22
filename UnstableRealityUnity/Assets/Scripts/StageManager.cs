@@ -19,6 +19,13 @@ public class StageManager : MonoBehaviour
     public int ActiveStage { get; private set; }
 
     [SerializeField]
+    private Texture DefaultTransTex;
+    [SerializeField]
+    private Material RenderCanvas;
+    private string TransTexName = "_TransitionTexture";
+    private string TransProgName = "_TransProgress";
+
+    [SerializeField]
     private Transform Player;
     private EntityMover PlayerMover;
     [SerializeField]
@@ -31,7 +38,7 @@ public class StageManager : MonoBehaviour
         {
             Stages[i].StageId = i;
         }
-
+        RenderCanvas.SetTexture(TransTexName, DefaultTransTex);
         StartCoroutine(PrepareTheatre());
     }
 
@@ -48,6 +55,11 @@ public class StageManager : MonoBehaviour
     public EntityMover GetPlayerMover()
     {
         return PlayerMover;
+    }
+
+    public void SetTransProgress(float value)
+    {
+        RenderCanvas.SetFloat(TransProgName, value);
     }
 
     // Update is called once per frame
@@ -80,6 +92,13 @@ public class StageManager : MonoBehaviour
         ActiveStage = stage;
         IsChangingStage = false;
         PlayerIsControllable = true;
+
+        for (float t = 1f; t > 0; t -= Time.deltaTime)
+        {
+            SetTransProgress(t);
+            yield return null;
+        }
+
         Stages[ActiveStage].FinishSetUp();
     }
 

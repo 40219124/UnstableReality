@@ -56,6 +56,7 @@ public class Stage : MonoBehaviour
             ExitRemaining += Time.deltaTime;
         }
         ExitRemaining = Mathf.Clamp(ExitRemaining, 0f, ExitDelay);
+        Manager.SetTransProgress(1f-(ExitRemaining / ExitDelay));
 
         if (ExitRemaining == 0f)
         {

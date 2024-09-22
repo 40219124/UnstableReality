@@ -8737,7 +8737,7 @@
     "m_DefaultRefNameVersion": 0,
     "m_RefNameGeneratedByDisplayName": "",
     "m_DefaultReferenceName": "Texture2D_d9631a668c944ad9b48ba755ac442445",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "_TransitionTexture",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
