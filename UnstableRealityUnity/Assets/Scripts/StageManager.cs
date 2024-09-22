@@ -52,6 +52,7 @@ public class StageManager : MonoBehaviour
             Stages[i].StageId = i;
         }
         RenderCanvas.SetTexture(TransTexName, DefaultTransTex);
+        SetTransProgress(1f);
         StartCoroutine(PrepareTheatre());
     }
 
@@ -100,7 +101,7 @@ public class StageManager : MonoBehaviour
             float fadeTime = 0.5f;
             for (float t = fadeTime; t > 0f; t -= Time.deltaTime)
             {
-                if(personalStart != TimeOfLastMusicChange)
+                if (personalStart != TimeOfLastMusicChange)
                 {
                     yield break;
                 }
@@ -109,7 +110,7 @@ public class StageManager : MonoBehaviour
             }
             MusicPlayer.Stop();
         }
-        if(newMusic == eMusic.none || personalStart != TimeOfLastMusicChange)
+        if (newMusic == eMusic.none || personalStart != TimeOfLastMusicChange)
         {
             yield break;
         }

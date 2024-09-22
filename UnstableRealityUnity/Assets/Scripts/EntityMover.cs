@@ -59,6 +59,38 @@ public static class ExtMets
                 return eDirections.none;
         }
     }
+
+    public static eDirections EnumDir(this Vector2 dir)
+    {
+        if(dir == Vector2.zero)
+        {
+            return eDirections.none;
+        }
+        eDirections output;
+        if (dir.x != 0f)
+        {
+            if (dir.x > 0f)
+            {
+                output = eDirections.right;
+            }
+            else
+            {
+                output = eDirections.left;
+            }
+        }
+        else
+        {
+            if (dir.y > 0f)
+            {
+                output = eDirections.up;
+            }
+            else
+            {
+                output = eDirections.down;
+            }
+        }
+        return output; 
+    }
 }
 
 public enum eDirections
@@ -130,6 +162,7 @@ public class EntityMover : MonoBehaviour
         TimeAttemptedSet = -1f;
     }
 
+   
 
     public eSetMoveResult SetDesiredDirection(Vector2 dir)
     {
@@ -142,20 +175,27 @@ public class EntityMover : MonoBehaviour
             return outcome;
         }
 
+        Vector2 modDir = dir;
         if (ModifyDesiredDirection != null)
         {
             foreach (Func<Vector2, Vector2> f in (ModifyDesiredDirection?.GetInvocationList()).Cast<Func<Vector2, Vector2>>())
             {
-                dir = f(dir);
+                modDir = f(modDir);
             }
         }
-        Vector3 desPos = (transform.position + dir.V2to3(0f));
 
-        Vector3Int tilePos = Tilemap.WorldToCell(desPos);
-        TileBase tile = Tilemap.GetTile(tilePos);
+        Vector3 desPos = (transform.position + modDir.V2to3(0f));
+        if (modDir != Vector2.zero)
+        {
+            Vector3Int tilePos = Tilemap.WorldToCell(desPos);
+            TileBase tile = Tilemap.GetTile(tilePos);
 
-
-        if (tile != null)
+            if (tile != null)
+            {
+                outcome = eSetMoveResult.blocked;
+            }
+        }
+        else
         {
             outcome = eSetMoveResult.blocked;
         }
@@ -173,43 +213,23 @@ public class EntityMover : MonoBehaviour
         }
 
         // dertermine enum
-        eDirections newDir = FacingDir;
-        if (dir.x != 0f)
-        {
-            if (dir.x > 0f)
-            {
-                newDir = eDirections.right;
-            }
-            else
-            {
-                newDir = eDirections.left;
-            }
-        }
-        else
-        {
-            if (dir.y > 0f)
-            {
-                newDir = eDirections.up;
-            }
-            else
-            {
-                newDir = eDirections.down;
-            }
-        }
+        eDirections travDir = (modDir != Vector2.zero ? modDir.EnumDir() : eDirections.none);
+        
         // set move enum if moving
         if (outcome != eSetMoveResult.blocked)
         {
-            TravelDir = newDir;
+            TravelDir = travDir;
         }
         // modify enum for facing different to moving
+        eDirections faceDir = dir.EnumDir();
         if (ModifyFacingDirection != null)
         {
             foreach (Func<eDirections, eDirections> f in ModifyFacingDirection.GetInvocationList().Cast<Func<eDirections, eDirections>>())
             {
-                newDir = f(newDir);
+                faceDir = f(faceDir);
             }
         }
-        FacingDir = newDir;
+        FacingDir = faceDir;
 
 
 
@@ -235,8 +255,8 @@ public class EntityMover : MonoBehaviour
 
     protected void DoFreezeAfterMove()
     {
-                FreezeAfterMove = false;
-                IsFrozen = true;
+        FreezeAfterMove = false;
+        IsFrozen = true;
     }
 
     void MoveUpdate()

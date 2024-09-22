@@ -31,12 +31,12 @@ public class Stage : MonoBehaviour
 
     protected eMusic OpeningMusic = eMusic.BasicDrone;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         ExitRemaining = ExitDelay;
     }
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
         if (Manager == null)
         {
@@ -45,16 +45,21 @@ public class Stage : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         if (!IsCurrentStage)
         {
             return;
         }
+        StageUpdate();
+    }
+
+    protected virtual void StageUpdate()
+    {
         ExitingUpdate();
     }
 
-    protected void ExitingUpdate()
+    protected virtual void ExitingUpdate()
     {
         if (PlayerOnExit)
         {
@@ -88,7 +93,7 @@ public class Stage : MonoBehaviour
         }
     }
 
-    public void SetCurrentStage(bool isCurrent)
+    public virtual void SetCurrentStage(bool isCurrent)
     {
         IsCurrentStage = isCurrent;
         if (isCurrent)
@@ -103,22 +108,22 @@ public class Stage : MonoBehaviour
         }
     }
 
-    public void FinishSetUp()
+    public virtual void FinishSetUp()
     {
         Player.IsFrozen = false;
     }
 
-    public void TearDown()
+    public virtual void TearDown()
     {
         ExitRemaining = ExitDelay;
     }
 
-    protected Vector2 ModifyDesiredDirection(Vector2 dir)
+    protected virtual Vector2 ModifyDesiredDirection(Vector2 dir)
     {
         return dir;
     }
 
-    protected eDirections ModifyFacingDirection(eDirections facing)
+    protected virtual eDirections ModifyFacingDirection(eDirections facing)
     {
         return facing;
     }
@@ -147,7 +152,7 @@ public class Stage : MonoBehaviour
         Player = null;
     }
 
-    protected void EndRoutine()
+    protected virtual void EndRoutine()
     {
         StartCoroutine(StageManager.Instance.LoadStage(NextStage.StageId));
         PlayerOnExit = false;

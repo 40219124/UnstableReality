@@ -72,7 +72,7 @@ public class GameManager : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #elif UNITY_WEBPLAYER
-        Application.OpenURL("https://elfqueen.itch.io");
+        Application.OpenURL("https://tatltuae.itch.io");
 #else
         Application.Quit();
 #endif

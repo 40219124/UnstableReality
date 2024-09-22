@@ -5,16 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/PetSteps.unity
     guid: 5c383b6591afdde45a949bcb19b31907
   - enabled: 1
     path: Assets/Scenes/Boot.unity
     guid: 764299397c4aa8648a6c5072797f225b
   - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: c6226827033fcc640b75f3f2b4d1f81e
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/DebugScene.unity
     guid: b22a4992d1edb5b489252f9f6e7623f0
   m_configObjects: {}
