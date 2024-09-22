@@ -181,7 +181,7 @@ public class Stage : MonoBehaviour
         PlayerOnExit = false;
     }
 
-    protected void OnEndEnter(Collider2D collision)
+    protected virtual void OnEndEnter(Collider2D collision)
     {
         PlayerOnExit = true;
     }

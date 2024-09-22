@@ -6,6 +6,11 @@ public class StageRightHop : Stage
 {
     bool jumpTime = false;
     float lastX;
+    public override void InitialSetUp()
+    {
+        base.InitialSetUp();
+        Manager.UseLimittedPalette(true);
+    }
     protected override void StageUpdate()
     {
         if (jumpTime)

@@ -28,6 +28,10 @@ public class StageManager : MonoBehaviour
     [SerializeField]
     private Texture DefaultTransTex;
     [SerializeField]
+    private Texture LimittedPalette;
+    [SerializeField]
+    private Texture FullPalette;
+    [SerializeField]
     private Material RenderCanvas;
     private readonly string TransTexName = "_TransitionTexture";
     private readonly string TransProgName = "_TransProgress";
@@ -163,5 +167,10 @@ public class StageManager : MonoBehaviour
     public IEnumerator LoadStage(int stage)
     {
         yield return StartCoroutine(ChangeStage(stage));
+    }
+
+    public void UseLimittedPalette(bool limit)
+    {
+        RenderCanvas.SetTexture("_OutPalette", (limit ? LimittedPalette : FullPalette));
     }
 }

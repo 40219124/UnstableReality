@@ -17,6 +17,7 @@ public class StageOpening : Stage
     {
         base.InitialSetUp();
         MakePlayerSilhouette(true);
+        Manager.UseLimittedPalette(true);
     }
 
     public override void TearDown()

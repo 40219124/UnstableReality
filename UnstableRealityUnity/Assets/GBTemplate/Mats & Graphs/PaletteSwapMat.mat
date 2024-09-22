@@ -84,6 +84,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _InPalette:
+        m_Texture: {fileID: 2800000, guid: 2160d3f8d2aa95e4495785e56f90d058, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 8400000, guid: d8eb361138293f84489b59478b1bf286, type: 2}
         m_Scale: {x: 1, y: 1}
@@ -96,6 +100,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _OutPalette:
+        m_Texture: {fileID: 2800000, guid: 06e799cb21850b64a908391fafa46a6e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -105,7 +113,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _TransitionTexture:
-        m_Texture: {fileID: 2800000, guid: 94d424c0bfb135e4ebf1dfbf70ec1606, type: 3}
+        m_Texture: {fileID: 2800000, guid: 02e516820ab23b54088fbb8fa974f988, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
