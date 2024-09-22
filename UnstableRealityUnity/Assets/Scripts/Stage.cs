@@ -29,7 +29,14 @@ public class Stage : MonoBehaviour
     protected float ExitRemaining = -1f;
     protected bool PlayerOnExit = false;
 
+    [SerializeField]
     protected eMusic OpeningMusic = eMusic.BasicDrone;
+    [SerializeField]
+    protected Texture OpeningTransImage;
+    public Texture GetOpeningTransImage() { return OpeningTransImage; }
+    [SerializeField]
+    protected Texture ClosingTransImage;
+    public Texture GetClosingTransImage() { return ClosingTransImage; }
 
     protected virtual void Awake()
     {
@@ -70,7 +77,7 @@ public class Stage : MonoBehaviour
             ExitRemaining += Time.deltaTime;
         }
         ExitRemaining = Mathf.Clamp(ExitRemaining, 0f, ExitDelay);
-        Manager.SetTransProgress(1f-(ExitRemaining / ExitDelay));
+        Manager.SetTransProgress(1f - (ExitRemaining / ExitDelay));
 
         if (ExitRemaining == 0f)
         {
@@ -111,6 +118,7 @@ public class Stage : MonoBehaviour
     public virtual void FinishSetUp()
     {
         Player.IsFrozen = false;
+        Manager.SetTransImage(ClosingTransImage);
     }
 
     public virtual void TearDown()

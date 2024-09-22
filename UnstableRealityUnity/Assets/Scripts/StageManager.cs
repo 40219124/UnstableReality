@@ -51,7 +51,7 @@ public class StageManager : MonoBehaviour
         {
             Stages[i].StageId = i;
         }
-        RenderCanvas.SetTexture(TransTexName, DefaultTransTex);
+        SetTransImage(DefaultTransTex);
         SetTransProgress(1f);
         StartCoroutine(PrepareTheatre());
     }
@@ -74,6 +74,11 @@ public class StageManager : MonoBehaviour
     public void SetTransProgress(float value)
     {
         RenderCanvas.SetFloat(TransProgName, value);
+    }
+
+    public void SetTransImage(Texture image)
+    {
+        RenderCanvas.SetTexture(TransTexName, image);
     }
 
     // Update is called once per frame
@@ -144,6 +149,7 @@ public class StageManager : MonoBehaviour
         ActiveStage = stage;
         IsChangingStage = false;
         PlayerIsControllable = true;
+        SetTransImage(Stages[ActiveStage].GetOpeningTransImage());
 
         for (float t = 1f; t > 0; t -= Time.deltaTime)
         {
